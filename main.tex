@@ -1,0 +1,18 @@
+\input{docs/preamble}
+
+\begin{document}
+	% Vorderteil
+	\include{docs/Titelseite}
+	\pagenumbering{Roman}
+	\tableofcontents
+	\clearpage
+	
+	% Haupteil
+	\pagenumbering{arabic}
+	\include{docs/Einleitung}
+	
+	% Schlussteil
+	\printbibliography[heading=bibintoc]
+	\listoffigures
+	\listoftables
+\end{document}

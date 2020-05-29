@@ -1,0 +1,44 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 2.9 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{none/global//global/global}
+    \entry{ttttt.312}{article}{}
+      \name{author}{1}{}{%
+        {{hash=6cee4618fc4960d184eb7efbd0aa27b5}{%
+           family={ttttt},
+           familyi={t\bibinitperiod}}}%
+      }
+      \strng{namehash}{6cee4618fc4960d184eb7efbd0aa27b5}
+      \strng{fullhash}{6cee4618fc4960d184eb7efbd0aa27b5}
+      \strng{bibnamehash}{6cee4618fc4960d184eb7efbd0aa27b5}
+      \strng{authorbibnamehash}{6cee4618fc4960d184eb7efbd0aa27b5}
+      \strng{authornamehash}{6cee4618fc4960d184eb7efbd0aa27b5}
+      \strng{authorfullhash}{6cee4618fc4960d184eb7efbd0aa27b5}
+      \field{sortinit}{1}
+      \field{sortinithash}{2174f786c6195e7fe2ee1c229b416e29}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{ttttt}
+      \field{year}{312}
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+

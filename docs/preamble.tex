@@ -1,0 +1,75 @@
+% Standartpackete=================================
+\documentclass[ngerman, 		% neue deutsche Rechtschr.
+				12pt,			% Standardschriftgroesse
+				a4paper,		% Papierformat
+				listof=totoc,	% Listen im Tabel of content anzeigen
+				parskip=half,	%vertikale Absatztrennung
+				]{scrreprt}
+				
+\usepackage[utf8]{inputenc}		% Zeichenkodierung utf8 für Umlaute etc.
+\usepackage[T1]{fontenc}		% Schriftkodierung
+\usepackage{babel}				% Sprachspezifische Anpassungen (Übersetzung und Silbentrennung)
+\usepackage{lmodern}			% verbesserte Computer Modern Schrift
+\usepackage{libertine}			% Linux Libertine Schrift
+\usepackage{microtype}
+
+\usepackage{csquotes}			%Deutsche Anführungszeichen
+\usepackage[onehalfspacing]{setspace}% 1,5-facher Zeilabstand
+\usepackage[justification=RaggedRight, singlelinecheck=false]{caption}			% Nutzung von \caption ausserhalb von Gleitumgebungen u. Manipulation caption, Captions sind linksbündig
+
+% Seitenränder==================================
+\usepackage[left=2cm, right=2cm,top=2.5cm, bottom=2.5cm]{geometry}
+
+			
+
+
+% Kopf und Fusszeile/Seitenzahlen========================
+\usepackage[]{scrlayer-scrpage}	%Nachfolger von scrpage2 ,headsepline aktiviert linie unter kopfzeile
+\pagestyle{scrheadings}
+
+\ihead{\headmark}
+\automark{section}	%teilt \headmark mit was es eintragen soll
+\chead{}			%erzwingt dass chead leer ist, kp y
+\cfoot{\pagemark}
+
+
+
+%Grafiken================================================
+\usepackage{graphicx,wrapfig}
+\setkomafont{captionlabel}{\bfseries}				%caption für Bildbeschriftung wird fett geschriebn
+\renewcaptionname{ngerman}{\figurename}{Abb.}		%ersetzt Abbilgung durch Abb. bei der Funktion \caption
+\usepackage{tikz}
+
+%Tabellen==========================================
+\usepackage{xcolor, colortbl}
+\definecolor{Gray}{gray}{0.85}
+\newcolumntype{g}{>{\columncolor{Gray}}c}		%grau hinterlegte Spalte; zentriert
+
+\usepackage{tabularx}
+\renewcaptionname{ngerman}{\tablename}{Tab.}
+
+%Mathe===============================================
+\usepackage{amsmath}
+
+%Einheiten==========================================
+\usepackage{siunitx}
+\sisetup{locale=DE}
+
+%Formelzeichen=======================================
+
+
+% Referenzieren=====================================
+\usepackage[plainpages=false]{hyperref}			% Immer als letztes laden, für klickbare Hyperlinks
+												% plainpages lässt zw. 2 und II unterscheiden
+								% wenn cleveref benutzt wird, dann NACH hyperef laden (einzige Ausnahme)
+\usepackage{cleveref}			% einfacher referenzieren (mit \cref{})
+\hypersetup{colorlinks=true, allcolors=black}
+
+%Literatur/Zitate===================================
+\usepackage[backend=biber,		% biber für die Sortierung etc
+			style=numeric-comp,	% numerischer Zitationstil in Zitation und Literaturverzeichnis
+			sorting=none,		% keine Sortierung (chronologisch)
+			bibwarn=true,		% Anzeige von Warnungen (einfacheres debugging)
+			bibencoding=utf8,	% bib auch in utf8 Eigabekodierung
+			]{biblatex}			% Erzeugen des Literaturverzeichnisses
+\addbibresource{refs.bib}		% im Latex-Projektordner muss eine Datei refs.bib vorhanden sein
