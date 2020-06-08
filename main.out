@@ -1,4 +1,9 @@
 \BOOKMARK [0][-]{chapter.1}{Einleitung}{}% 1
-\BOOKMARK [0][-]{chapter*.3}{Literatur}{}% 2
-\BOOKMARK [0][-]{chapter*.4}{Abbildungsverzeichnis}{}% 3
-\BOOKMARK [0][-]{chapter*.5}{Tabellenverzeichnis}{}% 4
+\BOOKMARK [0][-]{chapter.2}{Knotenverschiebung}{}% 2
+\BOOKMARK [1][-]{section.2.1}{Grundlagen}{chapter.2}% 3
+\BOOKMARK [1][-]{section.2.2}{Problembeschreibung}{chapter.2}% 4
+\BOOKMARK [2][-]{subsection.2.2.1}{Globale Steifigkeitsmatrix}{section.2.2}% 5
+\BOOKMARK [0][-]{chapter.3}{Teil 2: Dichte}{}% 6
+\BOOKMARK [0][-]{chapter*.3}{Literatur}{}% 7
+\BOOKMARK [0][-]{chapter*.4}{Abbildungsverzeichnis}{}% 8
+\BOOKMARK [0][-]{chapter*.5}{Tabellenverzeichnis}{}% 9

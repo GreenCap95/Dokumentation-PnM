@@ -39,6 +39,7 @@
 \setkomafont{captionlabel}{\bfseries}				%caption für Bildbeschriftung wird fett geschriebn
 \renewcaptionname{ngerman}{\figurename}{Abb.}		%ersetzt Abbilgung durch Abb. bei der Funktion \caption
 \usepackage{tikz}
+\usepackage{stanli}
 
 %Tabellen==========================================
 \usepackage{xcolor, colortbl}
@@ -73,3 +74,7 @@
 			bibencoding=utf8,	% bib auch in utf8 Eigabekodierung
 			]{biblatex}			% Erzeugen des Literaturverzeichnisses
 \addbibresource{refs.bib}		% im Latex-Projektordner muss eine Datei refs.bib vorhanden sein
+
+% new commands======================================
+\newcommand{\K}{\underline{K}}
+\newcommand{\I}{\underline{I}}

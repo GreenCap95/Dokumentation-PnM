@@ -1,0 +1,41 @@
+\chapter{Knotenverschiebung}\label{ch:Knotenverschiebung}
+Zunächst soll bestimmt werden, welche Knotenverschiebungen die Belastungen hervorrufen.
+\section{Grundlagen}\label{sec:Grundlagen}
+Für Stabwerke gilt der folgende Zusammenhang.
+ 
+\begin{equation}\label{eq:Ku=F}
+	K\vec{u}=\vec{F}
+\end{equation}
+
+Dabei ist $\K$ die Gesamtsteifigkeitsmatrix des Stabwerks, $\vec{F}$ der Kraftvektor und $ \vec{u} $ der Schiebungsvektor. Der Kraftvektor ist enthält alle Kräfte, die je Knoten in Richtung der Abzisse bzw. der Ordinate verlaufen.
+
+$ \K $ berechnet sich aus den lokalen Steifigkeitsmatrizen der Stäbe, deren Orienteirung im globalen Koordinatensystem (ausgedrückt durch den Winkel $ \alpha $) und deren Koinzidenzmatrix, die eine Zuordnung der lokalen zu den globalen Knoten beschreibt.
+
+Der Verschiebungsvektor $ \vec{u} $ enthält sämtliche Verschiebungen aller Knoten. Die Verschiebungen sind entsprechend ihrer Richtungsanteile aufgeteilt.
+
+\section{Problembeschreibung}\label{sec:Problembeschreibung}
+Um die Verschiebungen aller Knoten zu bestimmen, die nicht durch die Definition eines Lagers beschrieben werden, müssen zunächst $ \K $ und $ \vec{F} $ ermittelt werden.
+
+\subsection{Globale Steifigkeitsmatrix}\label{subsec:Globale Steifigkeitsmatrix}
+Die globale Steifigkeitsmatrix $ \K $ des Stabwerks wird in drei Schritten bestimmt. Zunächst wird mit Hilfe der allgemeinen globalen Steifigkeitsmatrix der Stäbe $ \K_{Stab} $ die Steifigkeitsmatrizen jedes einzelnen Stabs in globalen Koordinaten bestimmt. Dazu sind der E-Modul $ E $, die Querschnittsfläche $ A $, die Länge $ l $ und der Winkel $ \alpha $ um den lokalen Knoten 1 in $ \K_{Stab} $ einzusetzen.!!!!!Zitat Moldenhauer!!!!!!!!
+
+Im zweiten Schritt wird die Koinzidenzmatrix $ \I_{Stab} $ für jeden der Stäbe aufgestellt. Eine Koinzidenztabelle gemäß Moldenahueer wurde dazu in Python umgesetzt.
+
+Für den letzten Schritt wird die Steifigkeitsmatrix des Stabwerks wie folgt bestimmt !!!!zitat moldenhauer!!!!!!.
+\begin{equation}\label{eq:Gesamtsteifigkeitsmatrix}
+\K=\sum_i\I_i^T\K_i\I_i
+\end{equation}
+
+\subsection{Kraftvektor}\label{subsec:Kraftvektor}
+Die Komponenten des Kraftvektors $ \vec{F} $ sind größtenteils gegebene Größen. Sie werden entsprechend ihrer Richtung und dem Knoten an dem sie angreifen in den Kraftvektor eingetragen. Lediglich die Auflagerreaktionen sind nicht bekannt. 
+
+\section{Aufbereitung des Gleichungssystems}\label{sec:Aufbereitung des GL}
+Um die Verschiebungen trotz der unbekannten Lagerreaktionen bestimmen zu können, muss das Gleichungssystem reduziert werden. Zu diesem Zweck wird $ \vec{u} $ in die Vektoren $ \vec{u}_b $ und $ \vec{u}_g $ aufgeteilt, sodass gilt
+\begin{equation}\label{eq:u=ub+ug}
+	\vec{u}=\vec{u}_b+\vec{u}_g
+\end{equation}
+$ \vec{u}_b $ enthält dabei alle vorgegebenen Verschiebungen und den Wert 0 an den Stellen die gesuchten Verschiebungen entsprechen. $ \vec{u}_g $ trägt folglich nur die gesuchten Verschiebungen und Nullen für die die durch die Lagerungen bekannt sind.
+
+Da alle bekannten Verschiebungen aus der Lagerung stammen und diese null sind, ist $ \vec{u}_b=\vec{0} $. Für die weitere Berechnung ist $ \vec{u}_b $ also nicht relevant.
+
+Um das Gleichungssystem auf die gleiche Anzahl Gleichungen zu reduzieren wie die Anzahl gesuchter Verschiebungen, werden die Zeilen und Spalten der Matrixschreibweise gestrichen, in denen der Vektor der gesuchten Verschiebungen $ \vec{u}_g $ den Wert null hat. Das so reduzierte Gleichungssystem kann jetzt gelöst werden. 

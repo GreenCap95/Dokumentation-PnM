@@ -1,2 +1,88 @@
 \chapter{Einleitung}\label{ch:Einleitung}
-hi
+In dieser Arbeit soll das abgebildete Stabwerk analysiert und optimiert werden. Dies teilt sich sich drei Aufgabenteile auf.
+\begin{itemize}
+	\item Bestimmung der Knotenverschiebung für gegebene Belastung
+	\item Bestimmung eines konservativen Werts der Materialdichte aus Messdaten
+	\item Gewichtsoptimierung durch Variation der Stab-Querschnitte
+\end{itemize}
+Um die Berechnung des Stabwerks durch Programmierung numerischer Methoden zu ermöglichen, wird das Stabwerk, im Sinne einer objekt-orientierten Programmierung, im Python Objekte überführt. Objekte, die das STabwerk digital abbilden gehören zu einer von zwei Klassen; Stäben oder Knoten. Beide Klassen werden zunächst in Python implementiert. So können leicht sämtliche Eigenschaften des Stabwerks übertragen werden, während eine Betrachtung und Variation der individuellen Elemente möglich bleibt.
+
+Klassendiagramme:
+
+\begin{tabular}{|l|}
+	\hline
+	{\centering{\textbf{Stab}}}\\
+	\hline
+	- Winkel $ \alpha $ am lokalen Knoten 1 : float\\
+	- Querschnittsfläche : float\\
+	- Länge : float\\
+	- lokale Steifigkeitsmatrx : 2d-array\\
+	- Koinzidenzmatrix : 2d-array\\
+	- lokaler Knoten 1 : Knoten\_Global\\
+	- lokaler Knoten 2 : Knoten\_Global\\
+	\hline
+\end{tabular}
+
+Die Attribute der Klasse "`Stab"' beschreiben einen Stab vollständig für das Stabwerk in dem er sich befindet. Dabei wird davon ausgegangen, dass der E-Modul für alle Stäbe der selbe, nämlich $ E=\SI{210}{\newton\per\squared\metre} $ ist. Dieser Wert ist typtisch für Stähle.
+Den lokalen Knoten werden Objekte der Klasse "`Knoten\_Global"' zugeordnet, um (zusammen mit dem Winkel $ \alpha $) die Position des Stabs im Stabwerk eindeutig zu definieren. Die Koinzidenzmatrix leitet sich aus den den lokalen Knoten zugeordneten globalen Knoten ab und dient dazu die Gesamtsteifigkeitsmatrix $ K $ zu bestimmen.
+
+Globale Knoten
+
+\begin{tabular}{|l|}
+	{\centering{\textbf{Knoten\_Global}}}\\
+	\hline
+	- u : float\\
+	- v : float\\
+	\hline
+\end{tabular}
+
+Ausschlaggebende Attribute der globalen Knoten sind deren Verschiebungen $ u $ und $ v $, die aus der Belastung des Stabwerks resultieren.
+\begin{tikzpicture}
+	\point{a}{0}{0};
+	\point{b}{4}{0};
+	\point{c}{8}{0};
+	\point{d}{12}{0};
+	\point{e}{2}{2};
+	\point{f}{6}{2};
+	\point{g}{10}{2};
+	\point{h}{11.3}{2};
+	
+	\beam{2}{a}{b}; % Typ 2 ist Stab für Stabwerk, Typ 4 wäre Biegebalken
+	\beam{2}{b}{c};
+	\beam{2}{c}{d};
+	\beam{2}{a}{e};
+	\beam{2}{e}{b};
+	\beam{2}{b}{f};
+	\beam{2}{f}{c};
+	\beam{2}{c}{g};
+	\beam{2}{g}{d};
+	\beam{2}{e}{f};
+	\beam{2}{f}{g};
+	
+	\support{1}{a}; % Typ 1 ist Festlager
+	\support{2}{d}; % Loslager
+	
+	\hinge{1}{a}; % Typ 1 ist normales Gelenk
+	\hinge{1}{b};
+	\hinge{1}{c};
+	\hinge{1}{d};
+	\hinge{1}{e};
+	\hinge{1}{f};
+	\hinge{1}{g};
+	
+	\begin{scope}[color=red]
+		\load{1}{e}[180]; % Typ 1 ist einzelne Kraft
+		\load{1}{e}[270];
+		\load{1}{f}[270];
+		\load{1}{h}[180];
+		\load{1}{g}[270];
+	\end{scope}
+	
+	\dimensioning{2}{a}{e}{-.8}[$a$]; % Typ 2 vertikal
+	\dimensioning{1}{a}{e}{-1.5}[$a$];
+	\dimensioning{1}{e}{b}{-1.5}[$a$]; % Typ 1 horizontal
+	\dimensioning{1}{b}{f}{-1.5}[$a$];
+	\dimensioning{1}{f}{c}{-1.5}[$a$];
+	\dimensioning{1}{c}{g}{-1.5}[$a$];
+	\dimensioning{1}{g}{d}{-1.5}[$a$];
+\end{tikzpicture}
