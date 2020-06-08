@@ -61,7 +61,9 @@ Die Arbeit teilt sich in drei Aufgabenteile auf.
 	\item Gewichtsoptimierung durch Variation der Stab-Querschnitte
 \end{itemize}
 
-\section{Modellierung eines Stabwerks in Pythoncode}\label{sec:Modellierun eines Stabwerks}
+Um eine konsistente Programmierung zu erleichtern, werden sämtliche Werte in SI-kohärenten Einheiten verarbeitet.
+
+\section{Modellierung eines Stabwerks in Python}\label{sec:Modellierun eines Stabwerks}
 Um die Berechnung des Stabwerks durch Programmierung numerischer Methoden zu ermöglichen, wird das Stabwerk, im Sinne einer objekt-orientierten Programmierung, in Python-Code umgesetzt. Zwei Klassen von Objekte sind dazu nötig. Eine für die Stäbe und eine für globale Knoten. Durch die Erzeugung von Stab- bzw. Knotenobjekten können beliebige Stabwerke abgebildet werden.
 
 Die Abbildung \ref{fig:Klassendiagramme} stellt das Klassendiagramm der Stäbe dar. Das Klassendiagramm der Knoten ist nicht dargestellt, da sie keine Attribute oder Methoden definiert. Es wird lediglich ein Standart-Konstruktor definiert, um Objekte erzeugen zu können. Die Klasse dient nur dazu um einfach Knoten erzeugen zu können mit deren Hilfe die Koinzidenzmatrix der Stäbe aufgestellt werden kann.
