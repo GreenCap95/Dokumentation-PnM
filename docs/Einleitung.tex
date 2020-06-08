@@ -1,43 +1,8 @@
 \chapter{Einleitung}\label{ch:Einleitung}
-In dieser Arbeit soll das abgebildete Stabwerk analysiert und optimiert werden. Dies teilt sich sich drei Aufgabenteile auf.
-\begin{itemize}
-	\item Bestimmung der Knotenverschiebung für gegebene Belastung
-	\item Bestimmung eines konservativen Werts der Materialdichte aus Messdaten
-	\item Gewichtsoptimierung durch Variation der Stab-Querschnitte
-\end{itemize}
-Um die Berechnung des Stabwerks durch Programmierung numerischer Methoden zu ermöglichen, wird das Stabwerk, im Sinne einer objekt-orientierten Programmierung, im Python Objekte überführt. Objekte, die das STabwerk digital abbilden gehören zu einer von zwei Klassen; Stäben oder Knoten. Beide Klassen werden zunächst in Python implementiert. So können leicht sämtliche Eigenschaften des Stabwerks übertragen werden, während eine Betrachtung und Variation der individuellen Elemente möglich bleibt.
-
-Klassendiagramme:
-
-\begin{tabular}{|l|}
-	\hline
-	{\centering{\textbf{Stab}}}\\
-	\hline
-	- Winkel $ \alpha $ am lokalen Knoten 1 : float\\
-	- Querschnittsfläche : float\\
-	- Länge : float\\
-	- lokale Steifigkeitsmatrx : 2d-array\\
-	- Koinzidenzmatrix : 2d-array\\
-	- lokaler Knoten 1 : Knoten\_Global\\
-	- lokaler Knoten 2 : Knoten\_Global\\
-	\hline
-\end{tabular}
-
-Die Attribute der Klasse "`Stab"' beschreiben einen Stab vollständig für das Stabwerk in dem er sich befindet. Dabei wird davon ausgegangen, dass der E-Modul für alle Stäbe der selbe, nämlich $ E=\SI{210}{\newton\per\squared\metre} $ ist. Dieser Wert ist typtisch für Stähle.
-Den lokalen Knoten werden Objekte der Klasse "`Knoten\_Global"' zugeordnet, um (zusammen mit dem Winkel $ \alpha $) die Position des Stabs im Stabwerk eindeutig zu definieren. Die Koinzidenzmatrix leitet sich aus den den lokalen Knoten zugeordneten globalen Knoten ab und dient dazu die Gesamtsteifigkeitsmatrix $ K $ zu bestimmen.
-
-Globale Knoten
-
-\begin{tabular}{|l|}
-	{\centering{\textbf{Knoten\_Global}}}\\
-	\hline
-	- u : float\\
-	- v : float\\
-	\hline
-\end{tabular}
-
-Ausschlaggebende Attribute der globalen Knoten sind deren Verschiebungen $ u $ und $ v $, die aus der Belastung des Stabwerks resultieren.
-\begin{tikzpicture}
+In dieser Arbeit soll das Stabwerk aus \ref{fig:Stabwerk} analysiert und optimiert werden.
+\begin{figure}
+	\centering
+	\begin{tikzpicture}
 	\point{a}{0}{0};
 	\point{b}{4}{0};
 	\point{c}{8}{0};
@@ -71,11 +36,11 @@ Ausschlaggebende Attribute der globalen Knoten sind deren Verschiebungen $ u $ u
 	\hinge{1}{g};
 	
 	\begin{scope}[color=red]
-		\load{1}{e}[180]; % Typ 1 ist einzelne Kraft
-		\load{1}{e}[270];
-		\load{1}{f}[270];
-		\load{1}{h}[180];
-		\load{1}{g}[270];
+	\load{1}{e}[180]; % Typ 1 ist einzelne Kraft
+	\load{1}{e}[270];
+	\load{1}{f}[270];
+	\load{1}{h}[180];
+	\load{1}{g}[270];
 	\end{scope}
 	
 	\dimensioning{2}{a}{e}{-.8}[$a$]; % Typ 2 vertikal
@@ -85,4 +50,72 @@ Ausschlaggebende Attribute der globalen Knoten sind deren Verschiebungen $ u $ u
 	\dimensioning{1}{f}{c}{-1.5}[$a$];
 	\dimensioning{1}{c}{g}{-1.5}[$a$];
 	\dimensioning{1}{g}{d}{-1.5}[$a$];
-\end{tikzpicture}
+	\end{tikzpicture}
+	\caption{Stabwerk}\label{fig:Stabwerk}
+\end{figure}
+
+Die Arbeit teilt sich in drei Aufgabenteile auf.
+\begin{itemize}
+	\item Bestimmung der Knotenverschiebung für gegebene Belastung
+	\item Bestimmung eines konservativen Werts der Materialdichte aus Messdaten
+	\item Gewichtsoptimierung durch Variation der Stab-Querschnitte
+\end{itemize}
+
+\section{Modellierung eines Stabwerks in Pythoncode}\label{sec:Modellierun eines Stabwerks}
+Um die Berechnung des Stabwerks durch Programmierung numerischer Methoden zu ermöglichen, wird das Stabwerk, im Sinne einer objekt-orientierten Programmierung, in Python-Code umgesetzt. Zwei Klassen von Objekte sind dazu nötig. Eine für die Stäbe und eine für globale Knoten. Durch die Erzeugung von Stab- bzw. Knotenobjekten können beliebige Stabwerke abgebildet werden.
+
+Die Abbildung \ref{fig:Klassendiagramme} stellt das Klassendiagramm der Stäbe dar. Das Klassendiagramm der Knoten ist nicht dargestellt, da sie keine Attribute oder Methoden definiert. Es wird lediglich ein Standart-Konstruktor definiert, um Objekte erzeugen zu können. Die Klasse dient nur dazu um einfach Knoten erzeugen zu können mit deren Hilfe die Koinzidenzmatrix der Stäbe aufgestellt werden kann.
+
+\begin{figure}
+\centering
+	\begin{tabular}{ll}
+		\begin{tabular}{|l|}
+			\hline
+			{\centering{\textbf{Stab}}}\\
+			\hline
+			- Winkel $ \alpha $ am lokalen Knoten 1 : float\\
+			- Querschnittsfläche : float\\
+			- Länge : float\\
+			- lokale Steifigkeitsmatrx : 2d-array\\
+			- Koinzidenzmatrix : 2d-array\\
+			- lokaler Knoten 1 : Knoten\_Global\\
+			- lokaler Knoten 2 : Knoten\_Global\\
+			- alle globalen Knoten : dictionary
+			\hline
+		\end{tabular}
+	&
+		\begin{tabular}[b]{|l|}
+			\hline
+			{\centering{\textbf{Knoten}}}\\
+			\hline
+			- u : float\\
+			- v : float\\
+			\hline
+		\end{tabular}
+	\end{tabular}
+\caption{Klassendiagramme}
+\label{fig:Klassendiagramme}
+\end{figure}
+
+
+Die Attribute der Klasse "`Stab"' beschreiben einen Stab vollständig, für ein gegebenes Stabwerk. Um die entsprechenden Stäbe erzeugen zu können sind folgende Parameter an den Konstruktor zu übergeben:
+\begin{tabular}{l|l}
+	\hline
+	\textbf{Paramter}&\textbf{Beschreibung}\\
+	\hline
+	Winkel $ \alpha $& Winkel um lokalen Knoten 1 zwischen Stab und Horizontalen im Uhrzeigensinn\\
+	\hline
+	Länge&Länge des unbelasteten Stabs\\
+	\hline
+	Querschnittsfläche $ A $& Querschnittfläche des unbelasteten Stabs\\
+	\hline
+	globaler Knoten 1& Knoten-Objekt, das dem lokalen Knoten 1 entspricht\\
+	\hline
+	globaler Knoten 2& Knoten-Objekt, das dem lokalen Knoten 2 entspricht\\
+	\hline
+	gk&Dictionary mit allen globalen Knoten-Objekten (Form: {"'Knoten-Nr.:Knoten-Objekt})
+\end{tabular}
+
+Innerhalb des Konstruktors wird die allgemeine Steifigkeitsmatrix \cite{Moldenhauer.2018} eines Stabs in globalen Koordinaten definiert. Mit dem Winkel $ \alpha $ kann so die Steifigkeitsmatrix für jeden Stab bestimmt werden. Für diese Arbeit wird in dem Konstruktor eine zu dem Stabwerk passender Koinzidenzmatrix definiert. Da der Code aktuell die Variable verändert und sie damit unbrauchbar für die Erzeugung weiterer Stab-Objekte macht, wurde sich zu diesem Schritt entschieden, auch wenn die erstellte Klasse damit nur für dieses eine Stabwerk zu verwenden ist. Mit entsprechenden Anpassungen lässt sich die Klasse jedoch voraussichtlich auch für beliebige andere Stabwerke verwenden.
+
+Die Knoten- und Stab-Objekte werden in je einem Dictionary gesammelt. Als Keys werden die Knoten- bzw. Stabnummern verwendet. So kann in unmissverständlicher und leserlicher Form auf einzelne Objekte referenziert werden. Außerdem stehen so Objekte (die Dictionaries) zur Verfügung, um über alle Stäbe bzw. Knoten iterieren zu können.
