@@ -1,6 +1,31 @@
 \chapter{Teil 2: Dichte}\label{ch:Dichte}
+\section{Klärung der Aufgabenstellung}\label{sec:Klärung der Aufgabenstellung}
 Um die Masse des Stabwerks bestimmen zu können, muss zunächst die Dichte des verwendeten Werkstoffs festliegen. Es wird davon ausgegangen, dass alle Stäbe aus dem gleichen homogenen Material bestehen.
+
+Da nach einer \textit{konservativen} Dichte gefragt ist, muss zunächst definiert werden was in diesem Fall unter dem Begriff zu verstehen ist. Dann kann eine entsprechende Herleitung erfolgen.
+
+Im Ingenieurwesen beschreibt der Begriff "`konservativ"' häufig eine Annahme auf der sicheren Seite. Dies ist in der Regel sinnvoll, da exakte, in Realität zutreffende Werte lediglich näherungsweise bestimmt werden können. Um Unsicherheiten dieser Art zu begegnen, wird im Sinne einer konservativen Betrachtung immer vom ungünstigsten denkbaren Fall ausgegangen.
+
+\section{Theorie zur Bestimmung der konservativen Dichte}\label{sec:Theorie Dichte}
+Idealerweise würde man den wahren Mittelwert der Dichte eines homogenen Materials wählen. Mit diesem könnte die Masse eines unendlich großen Volumens exakt bestimmen werden, da dann alle möglichen Schwankungen mit dem wahren Mittelwert beschrieben werden könnten und auch sicher gestellt ist das alle möglichen Schwankungen auch auftreten.
+
+Da aus einer realen Menge an Werten nicht der wahr Mittelwert, bestimmt werden kann, dienen sog. Konfidenzintervalle dazu den Bereich einzugrenzen in dem der wahre Mittelwert mit einer gewissen Wahrscheinlichkeit liegt. Für den Bereich $ \pm2\cdot SE $ (Standarderror) um den Mittelwert $ \hat{\mu} $ der Daten, beträgt die Aufenthaltswahrscheinlichkeit für den wahren Mittelwert $ \mu $ ca. 95\%. Diese Wahrscheinlichkeit wird als ausreichend hoch angesehen. Als Annahme auf der sicheren Seite (im Sinne konservativer Berechnung) wird als Dichte derjenige Wert gewählt, der dem oberen Rand des Konfidenzintervalls entspricht. Die Wahrscheinlichkeit, dass der wahre Mittelwert niedriger ist als dieser beträgt 97,5\%. Diese Wahrscheinlichkeit wird als ausreichend groß erachtet. So kann eine Unterschätzung des Mittelwerts als unwahrscheinlich gewertet werden. Das setzt selbstverständlich zuverlässige Messwerte voraus.
+
+Der Standart-Error berechnet sich nach
+
+Dabei ist $ \sigma^2 $ die Varianz der Daten innerhalb einer Stichprobe und $ n $ die Stichprobengröße. Der Standartfehler ist also die Varianz auf die Stichprobengröße normiert. Für unterschiedlich große Stichproben ist keine kontinuirliche Änderung der Varianz zu erwarten. Mit steigender Stichprobengröße sinkt jedoch der Standart-Fehler. D.h das Konfidenzintevall wird schmaler. Je größer die Stichprobe ist desto näher liegen die Intervallsgrenzen also an dem wahren Mittelwert der betrachteten Größe.
 
 Es stehen 1000 Messwerte der Materialdichte zur Verfügung. Bei dieser Menge an Daten wird angenommen, dass sie gut die tatsächlichen Dichtewerte im realen Stab abbilden. Die Annahme vom homogenen Material verträgt sich daher mit der Festlegung eines konservativen Dichtewertes. 
 
-Da aus einer realen Menge an Werten nicht der wahr Mittelwert, bestimmt werden kann, dienen sog. Konfidenzintervalle dazu den Bereich einzugrenzen in dem der wahre Mittelwert mit einer gewissen Wahrscheinlichkeit liegt. Für den Bereich $ \pm2\cdot SE $ (Standarderror) um den Mittelwert der Daten, beträgt die Aufenthaltswahrscheinlichkeit für den wahren Mittelwert $ \mu $ 95\%. Diese Wahrscheinlichkeit wird als ausreichend hoch angesehen. Als Annahme auf der sicheren Seite (im Sinne konservativer Berechnung) wird als Dichte derjenige Wert gewählt, der dem oberen Rand des Konfidenzintervalls entspricht. Die Wahrscheinlichkeit, dass der wahre Mittelwert niedriger ist als dieser ist mit 97,5\% ausreichend groß, sodass eine Unterschätzung des Mittelwerts als unwahrscheinlich gewertet werden kann. Das setzt selbstverständlich zuverlässige Messwerte voraus.
+
+
+
+
+
+In der Praxis stehen nur endlich viele Messwerte zur Verfügung und auch die betrachteten Volumen sind endlich. Die verbleibende Unsicherheit bei der Bestimmung der Masse ist über entsprechenden Eigenschaften des gewählten Wertes zu begegnen. 
+
+Für eine beliegige Stichprobengröße kann der Mittelwert $ \hat{\mu} $, dieser Stichprobe berechnet werden. Mit einem Abstand von dem zweifachen des Standardfehler um diesem Mittelwert, lässt sich ein Bereich definieren in dem der wahre Mittelwert mit einer Wahrscheinlichkeit von 95\% liegt. Diesen Bereich nennt man Konfidenzintervall.
+
+Das Konfidenzintervall wird um so schmaler je größer die zugrundeliegende Stichprobe ist. Der Standardfehler, der die Größe  des Konfidenzintervall definiert, ist nämlich von der Standartabweichung und der Anzahl der Werte in der Stichprobe abhängig. Dabei ist der Standartfehler um so kleiner je kleiner die Streung und je größer die Anzahl der Werte ist. Dann konzentrien sich die Werte nämlich in einem schmalen Bereich um den deren Mittelwert.
+
+Der wahre Mittelwert könnte aber nur aus unendlich vielen Messwerten bestimmt werden.  Mit einer endlichen Anzahl an Messwerten kann der wahre Mittelwert allerdings nicht bestimmt werden. 

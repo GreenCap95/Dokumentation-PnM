@@ -1,6 +1,11 @@
 \chapter{Einleitung}\label{ch:Einleitung}
-In dieser Arbeit soll das Stabwerk aus \ref{fig:Stabwerk} analysiert und optimiert werden.
-\begin{figure}
+\section{Stabwerk}\label{sec:Stabwerk}
+In dieser Arbeit soll das ebene Stabwerk, dargestellt in \cref{fig:Stabwerk}, analysiert und optimiert werden.
+
+Dabei wird angenommen, dass die Stäbe aus homogenem Material bestehen. Der E-Modul des Materials beträgt $\SI{210e9}{\newton\per\metre\squared}$. Alle Stäbe haben zunächst die gleiche Querschnittsfläche von $ \SI{50}{\mm\squared} $. Die Längen der Stäbe werden durch das Grundmaß $ a=\SI{1}{\m} $ gegeben. Damit haben die horizontalen Stäbe eine Länge von $ l_1=\SI{2}{\m} $, während die schräg liegenden $ l_2=\sqrt{2}a^2\approx\SI{1.414}{\m} $ lang sind.
+
+Die Belastungen der Knoten, sowie Art und Position der Lagerung sind der Abbildung \cref{fig:Stabwerk} zu entnehmen. Mit Ausnahme der Randbedingungen durch die Lager, werden dem Stabwerk keine Knotenverschiebungen aufgezwungen.
+\begin{figure}[h]
 	\centering
 	\begin{tikzpicture}
 	\point{a}{0}{0};
@@ -53,71 +58,181 @@ In dieser Arbeit soll das Stabwerk aus \ref{fig:Stabwerk} analysiert und optimie
 	\end{tikzpicture}
 	\caption{Stabwerk}\label{fig:Stabwerk}
 \end{figure}
-
-Die Arbeit teilt sich in drei Aufgabenteile auf.
+\section{Aufgabenstellung}\label{sec:Aufgabenstellung}
+Das Stabwerk aus \cref{fig:Stabwerk} soll hinsichtlich drei Aufgabenteilen untersucht und angepasst werden.
 \begin{itemize}
 	\item Bestimmung der Knotenverschiebung für gegebene Belastung
 	\item Bestimmung eines konservativen Werts der Materialdichte aus Messdaten
 	\item Gewichtsoptimierung durch Variation der Stab-Querschnitte
 \end{itemize}
 
+Die Aufgabenteile sollen, sofern sinnvoll, mithilfe numerischer Methoden gelöst werden. Dazu nötiger Code wird in einem Jupyter-Notebook abgelegt. Als Programmiersprache dient Python 3. Das Jupyter-Notebook liegt dem Anhang bei.
+
 Um eine konsistente Programmierung zu erleichtern, werden sämtliche Werte in SI-kohärenten Einheiten verarbeitet.
 
 \section{Modellierung eines Stabwerks in Python}\label{sec:Modellierun eines Stabwerks}
-Um die Berechnung des Stabwerks durch Programmierung numerischer Methoden zu ermöglichen, wird das Stabwerk, im Sinne einer objekt-orientierten Programmierung, in Python-Code umgesetzt. Zwei Klassen von Objekte sind dazu nötig. Eine für die Stäbe und eine für globale Knoten. Durch die Erzeugung von Stab- bzw. Knotenobjekten können beliebige Stabwerke abgebildet werden.
+Um die Berechnung des Stabwerks durch Programmierung numerischer Methoden zu ermöglichen, wird das Stabwerk, im Sinne einer objekt-orientierten Programmierung, in Python-Code umgesetzt. Dies bietet die Möglichkeit dem Stabwerk bzw. den Stäbe entsprechende Eigenschaften zuzuordnen, die es jeweils beschreiben. Außerdem kann die Umsetzung der Lösungsverfahren mit Instanz-Methoden umgesetzt werden. Beides erleichtert die Programmierung und fördert die Leserlichkeit des Codes. 
 
-Die Abbildung \ref{fig:Klassendiagramme} stellt das Klassendiagramm der Stäbe dar. Das Klassendiagramm der Knoten ist nicht dargestellt, da sie keine Attribute oder Methoden definiert. Es wird lediglich ein Standart-Konstruktor definiert, um Objekte erzeugen zu können. Die Klasse dient nur dazu um einfach Knoten erzeugen zu können mit deren Hilfe die Koinzidenzmatrix der Stäbe aufgestellt werden kann.
+Zwei Klassen von Objekte sind also nötig. Eine für die Stäbe und eine für Das Stabwerk selbst. Die Stab-Objekte sind dabei von Eigenschaften des Stabwerks abhängig und umgekehrt. Aus diesem Grund werden den Instanzen gewisse Eigenschaften erst nach ihrer Instanzierung zugewiesen.
+
+Im Nachfolgenden werden die beiden Klassen beschrieben.
+
+\subsection{Stabwerk-Klasse}\label{subsec:Stabwerk-Klasse}
+Die Klasse \textins{Stabwerk} umfasst alle Attribute und Methoden, die das gesamte Stabwerk als solches betreffen. Detailtiere Beschreibungen zu den einzelnen Attributen und Methoden finden sie in den Kapitel der Teilaufgaben. An dieser Stelle soll lediglich eine Übersicht gegeben werden. \cref{fig:Klassendiagramm Stabwerk} zeigt das Klassendiagramm für Stabwerke.
 
 \begin{figure}
-\centering
-	\begin{tabular}{ll}
-		\begin{tabular}{|l|}
-			\hline
-			{\centering{\textbf{Stab}}}\\
-			\hline
-			- Winkel $ \alpha $ am lokalen Knoten 1 : float\\
-			- Querschnittsfläche : float\\
-			- Länge : float\\
-			- lokale Steifigkeitsmatrx : 2d-array\\
-			- Koinzidenzmatrix : 2d-array\\
-			- lokaler Knoten 1 : Knoten\_Global\\
-			- lokaler Knoten 2 : Knoten\_Global\\
-			- alle globalen Knoten : dictionary\\
-			\hline
-		\end{tabular}
-	&
-		\begin{tabular}[b]{|l|}
-			\hline
-			{\centering{\textbf{Knoten}}}\\
-			\hline
-			- u : float\\
-			- v : float\\
-			\hline
-		\end{tabular}
+	\centering
+	\begin{tabular}{|l|}
+		\hline
+		{\centering{\textbf{Stabwerk}}}\\
+		\hline
+		Attribute:\\
+		- Stäbe : 1d-array\\
+		- Kraftvektor : 1d-array\\
+		- Steifigkeitsmatrix : 2d-array\\
+		- reduzierte Steifigkeitsmatrix : 2d-array\\
+		- rohe Koinzidenzmatrix für Stäbe : 2d-array\\
+		- Indizes der Randbedingungen : Liste\\
+		- Masse : float\\
+		\hline
+		Methoden:\\
+		- calc\_masse : None\\
+		- reduce\_K : None\\
+		- calc\_K : None\\
 	\end{tabular}
-\caption{Klassendiagramme}
-\label{fig:Klassendiagramme}
+	\caption{Klassendiagramm Stabwerk}
+	\label{fig:Klassendiagramm Stabwerk}
+\end{figure}
+\subsubsection{Attribute}\label{subsubsec:Attribute-Stabwerk}
+Ein Stabwerk zeichnet sich durch folgende Eigenschaften aus:
+\begin{itemize}
+	\item Anzahl der Knoten
+	\item Anzahl der Stäbe 
+	\item Art und Position der Lagerung
+	\item Belastung
+	\item aufgeprägte Verschiebungen
+\end{itemize}
+
+Aus diesem Eigenschaften lassen sich die folgenden Attribute der Stabwerks-Klasse ableiten.
+\paragraph{Stäbe}
+Jede Instanz eines Stabwerks besitzt eine Liste an Stab-Instanzen, die es bilden.
+
+\paragraph{Masse}
+Ein Stabwerk besitzt eine Masse, welche die Summe aller Stab-Massen ist.
+\paragraph{Lastvektor}
+Der Lastvektor enthält alle Kräfte, die an den Knoten angreifen. Dieser beinhaltet nicht die unbekannten Lagerkräfte, da diese für die Berechnung der Verschiebungen aufgrund der Verschiebungsbedingungen durch die Lagerung nicht benötigt werden. (s.!!!!!!!!!!!!!!!!!!!!!! \ref)
+\paragraph{Steifigkeitsmatrix}
+Einer Stabwerk-Instanz wird erst nach der Erzeugung der Stab-Objekte ihre Steifigkeitsmatrix zugewiesen. Diese ist nämlich von den Element-Steifigkeitsmatrizen der Stäbe abhängig, die wiederum nur anhand der Knotenverteilung (I\_raw und lokaler Knoten) des Stabwerks erzeugt werden können.
+\paragraph{Rohe Koinzidenzmatrix}
+Die rohe Koinzidenmatrix (I\_raw) bildet die Vorlage zur Erzeugung der Koinzidenzmatrizen der einzelnen Stäbe (s. \cref{subsubsec:Attribute-Stabklasse}). $ \I_{raw} $ ist nur von der Anzahl der Knoten abhängig. Sie hat die Form
+
+\begin{equation*}
+	I_{raw}=\begin{pmatrix}
+	1&0&2&0&3&\dots\\
+	0&1&0&2&0&\dots\\
+	1&0&2&0&3&\dots\\
+	0&1&0&2&0&\dots\\
+	\end{pmatrix}
+\end{equation*}.
+
+Die Nummern stehen dabei Stellvertretend für die globalen Knoten.
+
+\paragraph{Indizes der Verschiebungs-Randbedingungen}
+Aufgrund der Lagerung entfallen gewissen Zeilen und Spalten aus der Steifigkeitsmatrix (s. \cref{sec:Grundlagen FEM}). Entsprechend wurden bereits für die Definition des Kraftvektors, die Lagerkräfte weggelassen. Mit einer Liste werden für dieses Attribute jetzt, die Indizes der Spalten und Zeilen des Matrizen-Gleichungssystems definiert, die nicht zur Bestimmung der unbekannten Verschiebungen dienen. So bleibt ein Gleichungssystem übrig das nur die unbekannten Verschiebungen liefert. Das Attribute findet in der Methode \textit{reduce\K} Anwendung.
+
+\subsubsection{Methoden}\label{subsubsec:Methoden-Klasse Stabwerk}
+Instanzen der Klasse Stabwerk besitzen folgende Methoden:
+\paragraph{calc\_K}
+Diese Methode stellt anhand der Elementsteifigkeits-Matrizen und Koinzidenzmatrizen der Stäbe (s. VERWEISE AUF KLASSSE STAB) die Gesamtsteifigkeitsmatrix $ \K $ des Stabwerks auf und weißt sie dem entsprechenden Attribut zu.
+
+\paragraph{reduce\_K}
+Mit der Methode "`reduce\_K"' werden aus der Steifigkeitsmatrix anhand der angegebenen Indizes (s. oben) die Spalten und Zeilen entfernt, die wegen der bekannten Verschiebungen durch die Lagerung zu Null-Spalten werden oder nicht Teil des Gleichungssystems zur Bestimmung der Knotenverschiebungen sind.
+
+\paragraph{calc\_masse}
+Diese Methode berechnet die Masse des Stabwerks und weißt sie dem Attribut \textins{masse} zu. Dazu werden die Massen-Werte aller Stäbe aufsummiert. Knoten werden als masselos betrachtet.
+
+\subsection{Stab-Klasse}\label{subsec:Stab-Klasse}
+\subsubsection{Attribute}\label{subsubsec:Attribute-Stabklasse}
+Ein Stab in einem Stabwerk zeichnet sich durch folgende Eigenschaften aus:
+\begin{itemize}
+	\item Neigungswinkel
+	\item Länge
+	\item Querschnittsfläche
+	\item zwei lokalen Stabknoten
+	\item Lage im Stabwerk
+\end{itemize}
+
+Aus diesem Eigenschaften lassen sich die folgenden Attribute der Stab-Klasse ableiten. \cref{fig:Klassendiagramm Stab} zeigt das Klassendiagramm der Stab-Klasse.
+
+\begin{figure}
+	\centering
+	\begin{tabular}{|l|}
+		\hline
+		{\centering{\textbf{Stab}}}\\
+		\hline
+		Attribute:\\
+		- Winkel $ \alpha $ am lokalen Knoten 1 : float\\
+		- Querschnittsfläche : float\\
+		- Länge : float\\
+		- lokale Steifigkeitsmatrx : 2d-array\\
+		- Koinzidenzmatrix : 2d-array\\
+		- lokaler Knoten 1 : Knoten\_Global\\
+		- lokaler Knoten 2 : Knoten\_Global\\
+		- alle globalen Knoten : dictionary\\
+		\hline
+		Methoden:\\
+		- calc\_masse : None\\
+		- 
+	\end{tabular}
+	\caption{Klassendiagramm Stabklasse}
+	\label{fig:Klassendiagramm Stab}
 \end{figure}
 
+\paragraph{Neigungswinkel $ \alpha $}
+Der Neigungswinkel $ \alpha $ beschreibt die Orientierung des Stabs im globalen Koordinatensystem des Stabwerks. $ \alpha $ ist der Winkel zwischen der Horizontalen und dem Stab. Er liegt am lokalen Knoten 1 und wird entgegen des Uhrzeigersinnes gemessen.
 
-Die Attribute der Klasse "`Stab"' beschreiben einen Stab vollständig, für ein gegebenes Stabwerk. Um die entsprechenden Stäbe erzeugen zu können sind folgende Parameter an den Konstruktor zu übergeben:
-\begin{tabular}{l|l}
-	\hline
-	\textbf{Paramter}&\textbf{Beschreibung}\\
-	\hline
-	Winkel $ \alpha $& Winkel um lokalen Knoten 1 zwischen Stab und Horizontalen im Uhrzeigensinn\\
-	\hline
-	Länge&Länge des unbelasteten Stabs\\
-	\hline
-	Querschnittsfläche $ A $& Querschnittfläche des unbelasteten Stabs\\
-	\hline
-	globaler Knoten 1& Knoten-Objekt, das dem lokalen Knoten 1 entspricht\\
-	\hline
-	globaler Knoten 2& Knoten-Objekt, das dem lokalen Knoten 2 entspricht\\
-	\hline
-	gk&Dictionary mit allen globalen Knoten-Objekten (Form: {"'Knoten-Nr.:Knoten-Objekt})
-\end{tabular}
+\paragraph{Länge}
+Jeder Stab besitzt eine Länge, die sich aus der Geometrie des Stabwerks ergibt (s. \cref{fig:Stabwerk}).
 
-Innerhalb des Konstruktors wird die allgemeine Steifigkeitsmatrix \cite{Moldenhauer.2018} eines Stabs in globalen Koordinaten definiert. Mit dem Winkel $ \alpha $ kann so die Steifigkeitsmatrix für jeden Stab bestimmt werden. Für diese Arbeit wird in dem Konstruktor eine zu dem Stabwerk passender Koinzidenzmatrix definiert. Da der Code aktuell die Variable verändert und sie damit unbrauchbar für die Erzeugung weiterer Stab-Objekte macht, wurde sich zu diesem Schritt entschieden, auch wenn die erstellte Klasse damit nur für dieses eine Stabwerk zu verwenden ist. Mit entsprechenden Anpassungen lässt sich die Klasse jedoch voraussichtlich auch für beliebige andere Stabwerke verwenden.
+\paragraph{Querschnittfläche}
+Um das Volumen jedes Stabs bestimmen zu können, wird neben der Länge auch die Querschnittfläche benötigt.
 
-Die Knoten- und Stab-Objekte werden in je einem Dictionary gesammelt. Als Keys werden die Knoten- bzw. Stabnummern verwendet. So kann in unmissverständlicher und leserlicher Form auf einzelne Objekte referenziert werden. Außerdem stehen so Objekte (die Dictionaries) zur Verfügung, um über alle Stäbe bzw. Knoten iterieren zu können.
+\paragraph{Lokale Knoten}
+Jeder Stab verbindet zwei Knoten mit einander. Betrachtet man den Stab und diese beiden Knoten isoliert, so spricht man von \textins{lokalen} Knoten. Diese können in beliebiger Reihenfolge nummeriert werden. Um die Position eines Stabes im Stabwerk zu beschreiben, wird neben dem Neigungswinkel $ \alpha $ noch eine Zuordnung der lokalen Knoten zu globalen Knoten, also denen des Stabwerks, benötigt. In der Stab-Klasse wird dies erreicht indem den Attributen für die lokalen Knoten die entsprechenden Nummern der globalen Knoten zugewiesen werden. \cite{Moldenhauer.2018}
+
+\paragraph{Dichte}
+Die Dichte des Materials wird benötigt, um die Masse der Stäbe bestimmen zu können.
+
+\paragraph{Steifigkeitsmatrix}
+Für die einzelnen Stäbe lassen sich die Elementsteifigkeits-Matrizen in globalen Koordinaten aufstellen, sofern deren Neigungswinkel, Querschnittfläche, Länge und E-Modul bekannt sind. Allgemein gilt \cite{Moldenhauer.2018}
+\begin{equation}
+	\K_{Stab}=\frac{EA}{l}\cdot\begin{pmatrix}
+	cos(\alpha)^2&sin(\alpha)cos(\alpha)&-cos(\alpha)^2&-sin(\alpha)cos(\alpha)\\
+	sin(\alpha)cos(\alpha)&sin(\alpha)^2&-sin(\alpha)cos(\alpha)&-sin(\alpha)^2\\
+	-cos(\alpha)^2&-sin(\alpha)cos(\alpha)&cos(\alpha)^2&sin(\alpha)cos(\alpha)\\
+	-sin(\alpha)cos(\alpha)&-sin(\alpha)^2&sin(\alpha)cos(\alpha)&sin(\alpha)^2
+	\end{pmatrix}
+\end{equation}
+
+\paragraph{Koinzidenzmatrix}
+Die Koinzidenmatrix $ \I_{Stab} $ geschreibt die Position des Stabs im Stabwerk indem sie den Verschiebungen der lokalen Knoten, die der globalen Knoten zuweist. Für ein ebenes System besitzt die Koinzidenmatrix vier Zeilen, je eine pro Verschiebungsrichtung je Knoten. Die Anzahl an Spalten ergibt sich aus der Anzahl globaler Knoten. $ \I_{Stab} $ hat doppelt so viele Spalten, wie die Anzahl globaler Knoten, denn auch für diese werden je Knoten bei möglichen Verschiebungsrichtungen berücksichtigt.
+
+\subsubsection{Methoden}
+\paragraph{calc\_masse}
+Die Methode weißt dem Stab-Objekt ein Attribut "`masse"' mit den entsprechenden Wert zu.
+
+
+
+
+\section{Instanzierung}\label{sec:Instanzierung}
+Ehe die Instanzen der Stäbe und des Stabwerks erzeugt werden können, sind folgende Variablen zu definieren.
+\begin{itemize}
+	\item Kraftvektor des Stabwerks (ohne Auflagerkräfte)
+	\item Längen der Stäbe
+	\item Querschnittsfläche der Stäbe
+\end{itemize}
+Zunächst wird die Instanz des Stabwerks erzeugt. An den Konstruktor sind die Anzahl der Knoten, die Indizes der Lager-Randbeginugen (s. \cref{sec:Grundlagen FEM}) und der Kraftvektor $ \vec{F} $ zu übergeben.
+
+Um die Stäbe zu erzeugen wird dem Konstruktor je Stab ein Neigungswinkel, Länge , Querschnittsfläche, die Nummern der globalen Knoten, die den lokalen Knoten entsprechen und die rohe Koinzidenmatrix des Stabwerks übergeben.
+
+Alle Stab-Objekte werden in einer Liste gesammelt, welche wiederum dem Attribut "`staebe"' des Stabwerks zugewiesen wird. Mit diesem Schritt ist die Modellierung des Stabwerks abgeschlossen. Im Zug der Bearbeitung der Teilaufgaben werden den Instanzen ggf. noch weitere Attribute zugewiesen, diese dienen dann jedoch expliziten Lösung der Aufgabenstellung und nicht mehr zu vorbereitenden Modellierung.
