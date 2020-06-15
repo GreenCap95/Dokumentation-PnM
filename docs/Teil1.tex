@@ -1,15 +1,15 @@
  \chapter{Knotenverschiebung}\label{ch:Knotenverschiebung}
-Zunächst soll bestimmt werden, welche Knotenverschiebungen die Belastungen hervorrufen.
+Aufgabenteil 1 ist es, die Verschiebungen der Knoten zu bestimmen, die durch die Belastung $\vec{F}$ hervorgerufen werden. (s. \cref{ch:Einleitung})
 \section{Grundlagen}\label{sec:Grundlagen FEM}
-Für Stabwerke gilt der folgende Zusammenhang \cite{Moldenhauer.2018}.
+Für Stabwerke gilt nach \cite{Moldenhauer.2018} der folgende Zusammenhang.
  
 \begin{equation}\label{eq:Ku=F}
 	K\vec{u}=\vec{F}
 \end{equation}
 
-Es liegt also ein Gleichungsystem in Matrixschreibweise vor, welches die Belastung der Knoten eines Stabwerks mit den Verschiebungen der Knoten in Zusammenhang stellt. Ausgedrückt wird dieser Zusammenhang durch die Gesamtsteifigkeitsmatrix $ \K $. In \ref{eq:Ku=F} ist $\vec{F}$ der Kraftvektor und $ \vec{u} $ der Verschiebungsvektor.
+Es liegt also ein Gleichungssystem in Matrixschreibweise vor, welches die Belastung eines Stabwerks mit den Verschiebungen der Knoten in Zusammenhang stellt. Ausgedrückt wird dieser Zusammenhang durch die Gesamtsteifigkeitsmatrix $ \K $. In \ref{eq:Ku=F} ist $\vec{F}$ der Kraftvektor und $ \vec{u} $ der Verschiebungsvektor.
 
-Der Kraftvektor $\vec{F}$  enthält alle Kräfte, die je Knoten in Richtung der Abzisse bzw. der Ordinate verlaufen. Die ersten beiden Komponenten von $\vec{F}$ sind also die Kräfte am Knoten 1 (erste Komponente in x-Richtung, zweite in y-Richtung). Entsprechend aufgebaut ist auch der Verschiebungsvektor $ \vec{u} $. Allgemein haben $ \vec{F} $ und $ \vec{u} $ also folgende Formen:
+Der Kraftvektor $\vec{F}$  enthält je Knoten zwei Kraft-Komponenten. Je eine pro Koordinaten-Richtung. Die ersten beiden Komponenten von $\vec{F}$ sind also die Kräfte am Knoten 1 (erste Komponente in x-Richtung, zweite in y-Richtung). Entsprechend aufgebaut ist auch der Verschiebungsvektor $ \vec{u} $. Allgemein haben $ \vec{F} $ und $ \vec{u} $ also folgende Formen:
 
 \begin{equation*}
 	\begin{pmatrix}
@@ -20,26 +20,47 @@ Der Kraftvektor $\vec{F}$  enthält alle Kräfte, die je Knoten in Richtung der 
 	\vdots
 	\end{pmatrix}
 \end{equation*}
-Die Indizes stehen dabei für die Knotennummer bzw. die Koordinatenrichtung. Im Verschiebungsvektor werden Verschiebungen in x-Richtung mit "`u"' und solche in y-Richtung mit "`v"' abgekürzt.
+Im Verschiebungsvektor werden Verschiebungen in x-Richtung mit "`u"' und solche in y-Richtung mit "`v"' abgekürzt.
 
-Damit $ \vec{u} $ bestimmt werden kann, sind also zunächst $ \K $ und $ \vec{F} $ zu bestimmen. 
+Damit $ \vec{u} $ bestimmt werden kann, sind zunächst $ \K $ und $ \vec{F} $ zu bestimmen. 
 
-Sind alle Element-Steifigkeitsmatrizen der Stäbe (in globalen Koordinaten) und deren Koinzidenzmatrizen bekannt, kann die Gesamtsteifigkeitsmatrix des Stabwerks bestimmt werden. Sie bildet die Summe aller Element-Steifigkeitsmatrizen multipliziert mit den Koinzidenzmatrizen des Stabs und deren Transponierten \cite{Moldenhauer.2018}.
+Sind alle Element-Steifigkeitsmatrizen der Stäbe (in globalen Koordinaten) und deren Koinzidenzmatrizen bekannt, kann die Gesamtsteifigkeitsmatrix des Stabwerks bestimmt werden. Sie bildet sich aus der Summe aller Element-Steifigkeitsmatrizen multipliziert mit den Koinzidenzmatrizen des Stabs und deren Transponierten \cite{Moldenhauer.2018}.
 \begin{equation}\label{eq:Gesamtsteifigkeitsmatrix}
 	\K=\sum_i\I_i^T\K_i\I_i
 \end{equation}
 
 Da das Stabwerk gelagert ist, unterliegt es Randbedingung bezüglich der Verschiebungen. So sind $ u_1=v_1=v_4=0 $, da sich am Knoten 1 ein Festlager befindet und an Knoten 4 ein Loslager befindet. Um die Randbedingungen zu berücksichtigen wird das Gleichungssystem aus \ref{eq:Ku=F} reduziert. D.h. es werden, entsprechend der Positionen der Randbedingungen, Zeilen und Spalten aus dem Gleichungssystem gestrichen. Erst das reduzierte Gleichungssystem kann mittel dem Lösungsverfahren nach \textit{Gauß-Jordan} gelöst werden, da die noch unbekannten Lagerkräfte nur in je einer Gleichung auftauchen. Sie können also nicht durch das Eliminationsverfahren behandelt werden. Folglich kann nur das reduzierte Gleichungssystem in die "`Reduced Row Ecolon"'-Form gebracht werden, was die Voraussetzung zur Lösung nach \textit{Gauß-Jordan} darstellt.
 
-\section{Umsetzung in Python}
+\section{Lösungsverfahren nach Gauß-Jordan}
+Ein lineares Gleichungssystem (LGS) kann in Matrix-Schreibweise ausgedrückt werden. Seine allgemeine Form ist dann
+\begin{equation}\label{eq:lgs matrixschreibweise}
+	Ax=b
+\end{equation}
+
+Ein gängiges Verfahren zur Lösung linearer Gleichungssysteme ist das Gauß´sche Eliminationsverfahren. Dabei werden durch geschicktes Zusammenführen je zweier Gleichungen der Reihe nach alle Unbekannten bestimmt. Das Prinzip dieses händischen Vorgehens kann auf die Matrix-Schreibweise übertragen und damit vom Rechner angewendet werden.
+
+Überführt man $ A $ aus \cref{eq:lgs matrixschreibweise} durch Elimination in die Einheitsmatrix, so lassen sich die gesuchten Unbekannten ablesen, da links lediglich die Unbekannten (Komponenten von $ x $) verbleiben. Man spricht von einer "`Reduced Row Ecolon"'-Form des LGS. Da für die Einheitsmatrix
+\begin{equation}\label{eq:Definition Inversematrix}
+	E=A^{-1}A
+\end{equation}
+gilt, folgt aus \cref{eq:lgs matrixschreibweise}
+\begin{equation}\label{eq:Lösung Gauß-Jordan}
+	x=A^{-1}b
+\end{equation}
+
+Angewendet auf \cref{eq:Ku=F} bedeutet dies also, dass die gesuchten Verschiebungen bestimmt werden können indem man die Inverse der Gesamtsteifigkeitsmatrix $ \K $ mit dem Kraftvektor $ \vec{F} $ multipliziert.
+
+\section{Umsetzung in Pyhton}\label{sec:Umsetzung in Pyhton}
 
 \subsection{Gesamtsteifigkeitsmatrix}\label{subsec:Gesamtsteifigkeitsmatrix}
-Um die Gesamtsteifigkeitsmatrix $ \K $ zu bestimmen und diese der Stabwerks-Instanz als Attribut zuzuweisen, wird die Methode "`calc\_K"' in der Klasse "`Stabwerk"' definiert. Darin wird mittels einer \textit{for}-Schleife wird über alle Objekte im Attribut "`Staebe"' iteriert. So können die Attribute $ \K_{Stab} $ und $ \I_{Stab} $ aller Stab-Objekte abgerufen werden und nach \ref{eq:Gesamtsteifigkeitsmatrix} zur Gesamtsteifigkeitsmatrix $ \K $ aufsummiert werden. Durch eine weitere Methode wird $ \K $, den Randbedingungen entsprechend, reduziert.
+Um die Gesamtsteifigkeitsmatrix $ \K $ zu bestimmen und diese der Stabwerks-Instanz als Attribut zuzuweisen, wird die Methode "`calc\_K"' definiert. Darin wird mittels einer \textit{for}-Schleife wird über alle Stäbe iteriert. So können die Attribute $ \K_{Stab} $ und $ \I_{Stab} $ aller Stab-Objekte abgerufen und nach \ref{eq:Gesamtsteifigkeitsmatrix} zur Gesamtsteifigkeitsmatrix $ \K $ aufsummiert werden. Durch eine weitere Methode "`reduce\_K"' wird $ \K $, den Randbedingungen entsprechend, reduziert.
 
-\subsection{Berechnung der Verschiebungen}\label{subsec:Berechnung der Verschiebungen}
-Wie in Kapitel \ref{sec:Grundlagen} beschrieben werden nur die unbekannten Knotenverschiebungen berechnet. Nach Gauß-Jordan löst die Inverse der reduzierten Steifigkeitsmatrix $ \K $, multipliziert mit dem Kraftvektor, das Gleichungssystem \ref{eq:Ku=F} für die gesuchten Verschiebungen auf.
+\section{Berechnung der Verschiebungen}\label{subsec:Berechnung der Verschiebungen}
+Das Python-Modul \textit{numpy} bietet implementierte Methoden zur Bestimmung der Inversen einer Matrix, sowie zur Matrix-Multiplikation. Damit lassen sich die gesuchten Verschiebungen direkt und, im Rahmen der Rechnergenauigkeit, exakt bestimmen.
 
-Um den vollständigen Verschiebungsvektor ausgeben zu können, werden die Verschiebungen als den Lagerbedingungen jetzt in den Ergebnissvektor eingesetzt.
+Wie in Kapitel \ref{sec:Grundlagen} beschrieben werden nur die unbekannten Knotenverschiebungen berechnet. Das Lösungsverfahren nach Gauß-Jordan beruht auf der Gauß-Elemination. D.h. durch geschicktes Zusammenführen je zweier Gleichungen lässt sich das lineare Gleichungssystem für eine Unbekannte nach der anderen auflösen. Angewendet auf eine Matrix-Schreibweise bedeutet dies, dass das Gleichungsystem in eine "`Reduced Row Ecolon"'-Form überführt wird. löst die Inverse der reduzierten Steifigkeitsmatrix $ \K $, multipliziert mit dem Kraftvektor, das Gleichungssystem \ref{eq:Ku=F} für die gesuchten Verschiebungen auf.
+
+Um den vollständigen Verschiebungsvektor ausgeben zu können, werden die Verschiebungs der Lagerbedingungen an den entsprechenden Stellen (Indizes s. \cref{subsubsec:Attribute-Stabklasse}) eingesetzt.
 Der vollständige Verschiebungsvektor lautet
 \begin{equation*}
 	\vec{u}=\begin{pmatrix}
@@ -51,6 +72,3 @@ Der vollständige Verschiebungsvektor lautet
 		
 	\end{pmatrix} 
 \end{equation*}
-
-\subsection{Ergebnisse}\label{subsec:Ergebnisse Aufgabe 1}
-Mit \ref{eq:Ku=F} bleibt damit ein Gleichungsystem für die unbekannten verschiebungen übrig. Dieses wird nach \textit{Gauß-Jordan} gelöst. Die Verschiebungen liegen alle im Bereich einstelliger Millimeterwerte. Für ein reales Stabwerk, dieser Größenordnung sind dies plausible Ergebnisse.

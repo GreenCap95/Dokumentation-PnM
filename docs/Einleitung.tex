@@ -233,6 +233,6 @@ Ehe die Instanzen der Stäbe und des Stabwerks erzeugt werden können, sind folg
 \end{itemize}
 Zunächst wird die Instanz des Stabwerks erzeugt. An den Konstruktor sind die Anzahl der Knoten, die Indizes der Lager-Randbeginugen (s. \cref{sec:Grundlagen FEM}) und der Kraftvektor $ \vec{F} $ zu übergeben.
 
-Um die Stäbe zu erzeugen wird dem Konstruktor je Stab ein Neigungswinkel, Länge , Querschnittsfläche, die Nummern der globalen Knoten, die den lokalen Knoten entsprechen und die rohe Koinzidenmatrix des Stabwerks übergeben.
+Um die Stäbe zu erzeugen wird dem Konstruktor je Stab ein Neigungswinkel, Länge , Querschnittsfläche, die Nummern der globalen Knoten, die den lokalen Knoten entsprechen und die rohe Koinzidenzmatrix des Stabwerks übergeben.
 
 Alle Stab-Objekte werden in einer Liste gesammelt, welche wiederum dem Attribut "`staebe"' des Stabwerks zugewiesen wird. Mit diesem Schritt ist die Modellierung des Stabwerks abgeschlossen. Im Zug der Bearbeitung der Teilaufgaben werden den Instanzen ggf. noch weitere Attribute zugewiesen, diese dienen dann jedoch expliziten Lösung der Aufgabenstellung und nicht mehr zu vorbereitenden Modellierung.
